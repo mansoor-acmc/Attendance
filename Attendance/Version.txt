@@ -1,0 +1,10 @@
+﻿V:5.4.4.0
+Adding Biotime attendance machines
+
+V:5.4.3.0
+create Scheme.ini for ODBC text reader driver.
+Converted text file reading format with the help of scheme.ini.
+
+V:5.4.2.0
+Introduced Biostar machines.
+Now can see Punch Images of employees
