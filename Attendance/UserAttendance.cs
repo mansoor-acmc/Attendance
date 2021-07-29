@@ -19,7 +19,7 @@ namespace Attendance
         EventLog eventLog1;
         bool isClosing = false;
         
-        public List<MachineLastLog> MachineLogs { get; set; }
+        public List<BAL.MachineLastLog> MachineLogs { get; set; }
 
         public UserAttendance()
         {
@@ -31,10 +31,10 @@ namespace Attendance
 
             MachineLogs = new List<MachineLastLog>();
 
-            double interval = double.Parse(System.Configuration.ConfigurationManager.AppSettings["interval"]) * (60 * 1000);
+            double interval = double.Parse(ConfigurationManager.AppSettings["interval"]) * (60 * 1000);
 
             timer = new System.Timers.Timer(interval);
-            timer.Interval = double.Parse(System.Configuration.ConfigurationManager.AppSettings["interval"]) * (60 * 1000);
+            timer.Interval = double.Parse(ConfigurationManager.AppSettings["interval"]) * (60 * 1000);
             timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
 
             this.Hide();
@@ -124,7 +124,7 @@ namespace Attendance
             timer.Start();
 
             startAttendanceServiceToolStripMenuItem.Enabled = false;
-            stopAttendanceServiceToolStripMenuItem.Enabled = true;
+            stopAttendanceServiceToolStripMenuItem.Enabled = true; 
         }
 
         private void stopAttendanceServiceToolStripMenuItem_Click(object sender, EventArgs e)

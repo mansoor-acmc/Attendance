@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="4fa1c7f7-0bf3-4ccd-9112-3935c13154a8" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="https://acmcuat.sandbox.operations.dynamics.com/soap/services/AttendanceServices" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="AttendanceServices.xsd" MetadataType="Schema" ID="d573b26c-8a08-4e3a-b6db-7a44cfce990d" SourceId="1" SourceUrl="https://acmcuat.sandbox.operations.dynamics.com/soap/services/AttendanceServices?xsd=xsd4" />
+    <MetadataFile FileName="AttendanceServices1.xsd" MetadataType="Schema" ID="fefb4733-b5ea-469e-a77c-550188d2be0c" SourceId="1" SourceUrl="https://acmcuat.sandbox.operations.dynamics.com/soap/services/AttendanceServices?xsd=xsd6" />
+    <MetadataFile FileName="AttendanceServices2.xsd" MetadataType="Schema" ID="512c4e6d-817c-4c82-b5e0-b1f1484d0ad8" SourceId="1" SourceUrl="https://acmcuat.sandbox.operations.dynamics.com/soap/services/AttendanceServices?xsd=xsd5" />
+    <MetadataFile FileName="AttendanceServices3.xsd" MetadataType="Schema" ID="9a1d1bca-2d7a-4b55-b153-c27f2bcc170f" SourceId="1" SourceUrl="https://acmcuat.sandbox.operations.dynamics.com/soap/services/AttendanceServices?xsd=xsd0" />
+    <MetadataFile FileName="AttendanceServices.wsdl" MetadataType="Wsdl" ID="bcd83986-0ae0-495a-a103-d254890b64c8" SourceId="1" SourceUrl="https://acmcuat.sandbox.operations.dynamics.com/soap/services/AttendanceServices?wsdl" />
+    <MetadataFile FileName="AttendanceServices4.xsd" MetadataType="Schema" ID="e1706b6c-d1bd-4f9c-ad01-410d05ebab3b" SourceId="1" SourceUrl="https://acmcuat.sandbox.operations.dynamics.com/soap/services/AttendanceServices?xsd=xsd2" />
+    <MetadataFile FileName="AttendanceServices5.xsd" MetadataType="Schema" ID="57eaaad5-77b4-4de6-838f-caf281cc06e4" SourceId="1" SourceUrl="https://acmcuat.sandbox.operations.dynamics.com/soap/services/AttendanceServices?xsd=xsd3" />
+    <MetadataFile FileName="AttendanceServices6.xsd" MetadataType="Schema" ID="40f99c50-c754-4d8c-b85b-1bc167639abb" SourceId="1" SourceUrl="https://acmcuat.sandbox.operations.dynamics.com/soap/services/AttendanceServices?xsd=xsd1" />
+    <MetadataFile FileName="AttendanceServices.disco" MetadataType="Disco" ID="c6b8d11f-ac79-404c-8903-eac7368db10f" SourceId="1" SourceUrl="https://acmcuat.sandbox.operations.dynamics.com/soap/services/AttendanceServices?disco" />
+    <MetadataFile FileName="AttendanceServices1.wsdl" MetadataType="Wsdl" ID="cc385de3-3c2e-4480-aaa8-91d928ea02f9" SourceId="1" SourceUrl="https://acmcuat.sandbox.operations.dynamics.com/soap/services/AttendanceServices?wsdl=wsdl0" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

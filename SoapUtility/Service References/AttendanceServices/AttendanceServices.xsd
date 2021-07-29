@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/Dynamics.Ax.Application" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Dynamics.Ax.Application" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://fac-stage-ax04:8101/DynamicsAx/Services/AttendanceServices?xsd=xsd8" namespace="http://schemas.datacontract.org/2004/07/Microsoft.Dynamics.Ax.Xpp" />
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/Dynamics.AX.Application" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Dynamics.AX.Application" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="https://acmcuat.sandbox.operations.dynamics.com/soap/services/AttendanceServices?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/Microsoft.Dynamics.Ax.Xpp" />
+  <xs:complexType name="ArrayOfTimeCardContract">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="TimeCardContract" nillable="true" type="tns:TimeCardContract" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfTimeCardContract" nillable="true" type="tns:ArrayOfTimeCardContract" />
   <xs:complexType name="TimeCardContract">
     <xs:complexContent mixed="false">
       <xs:extension xmlns:q1="http://schemas.datacontract.org/2004/07/Microsoft.Dynamics.Ax.Xpp" base="q1:XppObjectBase">
@@ -16,6 +22,12 @@
     </xs:complexContent>
   </xs:complexType>
   <xs:element name="TimeCardContract" nillable="true" type="tns:TimeCardContract" />
+  <xs:complexType name="ArrayOfTimeCardSmallContract">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="TimeCardSmallContract" nillable="true" type="tns:TimeCardSmallContract" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfTimeCardSmallContract" nillable="true" type="tns:ArrayOfTimeCardSmallContract" />
   <xs:complexType name="TimeCardSmallContract">
     <xs:complexContent mixed="false">
       <xs:extension xmlns:q2="http://schemas.datacontract.org/2004/07/Microsoft.Dynamics.Ax.Xpp" base="q2:XppObjectBase">
@@ -31,16 +43,4 @@
     </xs:complexContent>
   </xs:complexType>
   <xs:element name="TimeCardSmallContract" nillable="true" type="tns:TimeCardSmallContract" />
-  <xs:complexType name="ArrayOfTimeCardSmallContract">
-    <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="TimeCardSmallContract" nillable="true" type="tns:TimeCardSmallContract" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="ArrayOfTimeCardSmallContract" nillable="true" type="tns:ArrayOfTimeCardSmallContract" />
-  <xs:complexType name="ArrayOfTimeCardContract">
-    <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="TimeCardContract" nillable="true" type="tns:TimeCardContract" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="ArrayOfTimeCardContract" nillable="true" type="tns:ArrayOfTimeCardContract" />
 </xs:schema>

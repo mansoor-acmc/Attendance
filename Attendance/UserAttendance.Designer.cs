@@ -56,7 +56,7 @@
             // 
             this.notifyIcon1.ContextMenuStrip = this.contextMenuStrip1;
             this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
-            this.notifyIcon1.Text = "Attendance Service V5.4.4";
+            this.notifyIcon1.Text = "Attendance Service V5.5";
             this.notifyIcon1.Visible = true;
             // 
             // contextMenuStrip1
@@ -246,7 +246,7 @@
             this.Name = "UserAttendance";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Attendance Service V5.4.4";
+            this.Text = "Attendance Service V5.5";
             this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);

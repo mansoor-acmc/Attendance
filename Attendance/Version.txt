@@ -1,4 +1,9 @@
-﻿V:5.4.4.0
+﻿V:5.5.0.0
+Adding solution in GIT Repo
+Added projects: AuthenticationUtility, SoapUtility
+Upgrade AIF services to D365 WCF services.
+
+V:5.4.4.0
 Adding Biotime attendance machines
 
 V:5.4.3.0

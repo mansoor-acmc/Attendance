@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://tempuri.org" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="https://acmcuat.sandbox.operations.dynamics.com/soap/services/AttendanceServices?xsd=xsd2" namespace="http://tempuri.org" />
+      <xsd:import schemaLocation="https://acmcuat.sandbox.operations.dynamics.com/soap/services/AttendanceServices?xsd=xsd3" namespace="http://schemas.microsoft.com/dynamics/2013/01/datacontracts" />
+      <xsd:import schemaLocation="https://acmcuat.sandbox.operations.dynamics.com/soap/services/AttendanceServices?xsd=xsd0" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="https://acmcuat.sandbox.operations.dynamics.com/soap/services/AttendanceServices?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="https://acmcuat.sandbox.operations.dynamics.com/soap/services/AttendanceServices?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/Dynamics.AX.Application" />
+      <xsd:import schemaLocation="https://acmcuat.sandbox.operations.dynamics.com/soap/services/AttendanceServices?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/Microsoft.Dynamics.Ax.Xpp" />
+      <xsd:import schemaLocation="https://acmcuat.sandbox.operations.dynamics.com/soap/services/AttendanceServices?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/Microsoft.Dynamics.AX.KernelInterop" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="applyLeaveTransaction">
+    <wsdl:part name="parameters" element="tns:applyLeaveTransaction" />
+  </wsdl:message>
+  <wsdl:message name="applyLeaveTransaction_Headers">
+    <wsdl:part xmlns:q1="http://schemas.microsoft.com/dynamics/2013/01/datacontracts" name="callContext" element="q1:CallContext" />
+  </wsdl:message>
+  <wsdl:message name="applyLeaveTransactionResponse">
+    <wsdl:part name="parameters" element="tns:applyLeaveTransactionResponse" />
+  </wsdl:message>
+  <wsdl:message name="applyLeaveTransactionResponse_Headers">
+    <wsdl:part xmlns:q2="http://schemas.microsoft.com/dynamics/2013/01/datacontracts" name="infolog" element="q2:Infolog" />
+  </wsdl:message>
+  <wsdl:message name="EmpTimeCardService_applyLeaveTransaction_SoapServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q3="http://schemas.microsoft.com/dynamics/2013/01/datacontracts" name="detail" element="q3:Fault" />
+  </wsdl:message>
+  <wsdl:message name="CreateAttendance">
+    <wsdl:part name="parameters" element="tns:CreateAttendance" />
+  </wsdl:message>
+  <wsdl:message name="CreateAttendance_Headers">
+    <wsdl:part xmlns:q4="http://schemas.microsoft.com/dynamics/2013/01/datacontracts" name="callContext" element="q4:CallContext" />
+  </wsdl:message>
+  <wsdl:message name="CreateAttendanceResponse">
+    <wsdl:part name="parameters" element="tns:CreateAttendanceResponse" />
+  </wsdl:message>
+  <wsdl:message name="CreateAttendanceResponse_Headers">
+    <wsdl:part xmlns:q5="http://schemas.microsoft.com/dynamics/2013/01/datacontracts" name="infolog" element="q5:Infolog" />
+  </wsdl:message>
+  <wsdl:message name="EmpTimeCardService_CreateAttendance_SoapServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q6="http://schemas.microsoft.com/dynamics/2013/01/datacontracts" name="detail" element="q6:Fault" />
+  </wsdl:message>
+  <wsdl:message name="GetLastMachineLogIds">
+    <wsdl:part name="parameters" element="tns:GetLastMachineLogIds" />
+  </wsdl:message>
+  <wsdl:message name="GetLastMachineLogIds_Headers">
+    <wsdl:part xmlns:q7="http://schemas.microsoft.com/dynamics/2013/01/datacontracts" name="callContext" element="q7:CallContext" />
+  </wsdl:message>
+  <wsdl:message name="GetLastMachineLogIdsResponse">
+    <wsdl:part name="parameters" element="tns:GetLastMachineLogIdsResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetLastMachineLogIdsResponse_Headers">
+    <wsdl:part xmlns:q8="http://schemas.microsoft.com/dynamics/2013/01/datacontracts" name="infolog" element="q8:Infolog" />
+  </wsdl:message>
+  <wsdl:message name="EmpTimeCardService_GetLastMachineLogIds_SoapServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q9="http://schemas.microsoft.com/dynamics/2013/01/datacontracts" name="detail" element="q9:Fault" />
+  </wsdl:message>
+  <wsdl:message name="getLastSwipeId">
+    <wsdl:part name="parameters" element="tns:getLastSwipeId" />
+  </wsdl:message>
+  <wsdl:message name="getLastSwipeId_Headers">
+    <wsdl:part xmlns:q10="http://schemas.microsoft.com/dynamics/2013/01/datacontracts" name="callContext" element="q10:CallContext" />
+  </wsdl:message>
+  <wsdl:message name="getLastSwipeIdResponse">
+    <wsdl:part name="parameters" element="tns:getLastSwipeIdResponse" />
+  </wsdl:message>
+  <wsdl:message name="getLastSwipeIdResponse_Headers">
+    <wsdl:part xmlns:q11="http://schemas.microsoft.com/dynamics/2013/01/datacontracts" name="infolog" element="q11:Infolog" />
+  </wsdl:message>
+  <wsdl:message name="EmpTimeCardService_getLastSwipeId_SoapServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q12="http://schemas.microsoft.com/dynamics/2013/01/datacontracts" name="detail" element="q12:Fault" />
+  </wsdl:message>
+  <wsdl:message name="SaveRawAttendance">
+    <wsdl:part name="parameters" element="tns:SaveRawAttendance" />
+  </wsdl:message>
+  <wsdl:message name="SaveRawAttendance_Headers">
+    <wsdl:part xmlns:q13="http://schemas.microsoft.com/dynamics/2013/01/datacontracts" name="callContext" element="q13:CallContext" />
+  </wsdl:message>
+  <wsdl:message name="SaveRawAttendanceResponse">
+    <wsdl:part name="parameters" element="tns:SaveRawAttendanceResponse" />
+  </wsdl:message>
+  <wsdl:message name="SaveRawAttendanceResponse_Headers">
+    <wsdl:part xmlns:q14="http://schemas.microsoft.com/dynamics/2013/01/datacontracts" name="infolog" element="q14:Infolog" />
+  </wsdl:message>
+  <wsdl:message name="EmpTimeCardService_SaveRawAttendance_SoapServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q15="http://schemas.microsoft.com/dynamics/2013/01/datacontracts" name="detail" element="q15:Fault" />
+  </wsdl:message>
+  <wsdl:message name="WorkerInOutRegistration">
+    <wsdl:part name="parameters" element="tns:WorkerInOutRegistration" />
+  </wsdl:message>
+  <wsdl:message name="WorkerInOutRegistration_Headers">
+    <wsdl:part xmlns:q16="http://schemas.microsoft.com/dynamics/2013/01/datacontracts" name="callContext" element="q16:CallContext" />
+  </wsdl:message>
+  <wsdl:message name="WorkerInOutRegistrationResponse">
+    <wsdl:part name="parameters" element="tns:WorkerInOutRegistrationResponse" />
+  </wsdl:message>
+  <wsdl:message name="WorkerInOutRegistrationResponse_Headers">
+    <wsdl:part xmlns:q17="http://schemas.microsoft.com/dynamics/2013/01/datacontracts" name="infolog" element="q17:Infolog" />
+  </wsdl:message>
+  <wsdl:message name="EmpTimeCardService_WorkerInOutRegistration_SoapServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q18="http://schemas.microsoft.com/dynamics/2013/01/datacontracts" name="detail" element="q18:Fault" />
+  </wsdl:message>
+  <wsdl:message name="WorkerInOutRegistrationForDay">
+    <wsdl:part name="parameters" element="tns:WorkerInOutRegistrationForDay" />
+  </wsdl:message>
+  <wsdl:message name="WorkerInOutRegistrationForDay_Headers">
+    <wsdl:part xmlns:q19="http://schemas.microsoft.com/dynamics/2013/01/datacontracts" name="callContext" element="q19:CallContext" />
+  </wsdl:message>
+  <wsdl:message name="WorkerInOutRegistrationForDayResponse">
+    <wsdl:part name="parameters" element="tns:WorkerInOutRegistrationForDayResponse" />
+  </wsdl:message>
+  <wsdl:message name="WorkerInOutRegistrationForDayResponse_Headers">
+    <wsdl:part xmlns:q20="http://schemas.microsoft.com/dynamics/2013/01/datacontracts" name="infolog" element="q20:Infolog" />
+  </wsdl:message>
+  <wsdl:message name="EmpTimeCardService_WorkerInOutRegistrationForDay_SoapServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q21="http://schemas.microsoft.com/dynamics/2013/01/datacontracts" name="detail" element="q21:Fault" />
+  </wsdl:message>
+  <wsdl:portType name="EmpTimeCardService">
+    <wsdl:operation name="applyLeaveTransaction">
+      <wsdl:input wsam:Action="http://tempuri.org/EmpTimeCardService/applyLeaveTransaction" name="applyLeaveTransaction" message="tns:applyLeaveTransaction" />
+      <wsdl:output wsam:Action="http://tempuri.org/EmpTimeCardService/applyLeaveTransactionResponse" name="applyLeaveTransactionResponse" message="tns:applyLeaveTransactionResponse" />
+      <wsdl:fault wsam:Action="http://tempuri.org/EmpTimeCardService/Fault" name="SoapServiceFaultFault" message="tns:EmpTimeCardService_applyLeaveTransaction_SoapServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateAttendance">
+      <wsdl:input wsam:Action="http://tempuri.org/EmpTimeCardService/CreateAttendance" name="CreateAttendance" message="tns:CreateAttendance" />
+      <wsdl:output wsam:Action="http://tempuri.org/EmpTimeCardService/CreateAttendanceResponse" name="CreateAttendanceResponse" message="tns:CreateAttendanceResponse" />
+      <wsdl:fault wsam:Action="http://tempuri.org/EmpTimeCardService/Fault" name="SoapServiceFaultFault" message="tns:EmpTimeCardService_CreateAttendance_SoapServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetLastMachineLogIds">
+      <wsdl:input wsam:Action="http://tempuri.org/EmpTimeCardService/GetLastMachineLogIds" name="GetLastMachineLogIds" message="tns:GetLastMachineLogIds" />
+      <wsdl:output wsam:Action="http://tempuri.org/EmpTimeCardService/GetLastMachineLogIdsResponse" name="GetLastMachineLogIdsResponse" message="tns:GetLastMachineLogIdsResponse" />
+      <wsdl:fault wsam:Action="http://tempuri.org/EmpTimeCardService/Fault" name="SoapServiceFaultFault" message="tns:EmpTimeCardService_GetLastMachineLogIds_SoapServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="getLastSwipeId">
+      <wsdl:input wsam:Action="http://tempuri.org/EmpTimeCardService/getLastSwipeId" name="getLastSwipeId" message="tns:getLastSwipeId" />
+      <wsdl:output wsam:Action="http://tempuri.org/EmpTimeCardService/getLastSwipeIdResponse" name="getLastSwipeIdResponse" message="tns:getLastSwipeIdResponse" />
+      <wsdl:fault wsam:Action="http://tempuri.org/EmpTimeCardService/Fault" name="SoapServiceFaultFault" message="tns:EmpTimeCardService_getLastSwipeId_SoapServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveRawAttendance">
+      <wsdl:input wsam:Action="http://tempuri.org/EmpTimeCardService/SaveRawAttendance" name="SaveRawAttendance" message="tns:SaveRawAttendance" />
+      <wsdl:output wsam:Action="http://tempuri.org/EmpTimeCardService/SaveRawAttendanceResponse" name="SaveRawAttendanceResponse" message="tns:SaveRawAttendanceResponse" />
+      <wsdl:fault wsam:Action="http://tempuri.org/EmpTimeCardService/Fault" name="SoapServiceFaultFault" message="tns:EmpTimeCardService_SaveRawAttendance_SoapServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="WorkerInOutRegistration">
+      <wsdl:input wsam:Action="http://tempuri.org/EmpTimeCardService/WorkerInOutRegistration" name="WorkerInOutRegistration" message="tns:WorkerInOutRegistration" />
+      <wsdl:output wsam:Action="http://tempuri.org/EmpTimeCardService/WorkerInOutRegistrationResponse" name="WorkerInOutRegistrationResponse" message="tns:WorkerInOutRegistrationResponse" />
+      <wsdl:fault wsam:Action="http://tempuri.org/EmpTimeCardService/Fault" name="SoapServiceFaultFault" message="tns:EmpTimeCardService_WorkerInOutRegistration_SoapServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="WorkerInOutRegistrationForDay">
+      <wsdl:input wsam:Action="http://tempuri.org/EmpTimeCardService/WorkerInOutRegistrationForDay" name="WorkerInOutRegistrationForDay" message="tns:WorkerInOutRegistrationForDay" />
+      <wsdl:output wsam:Action="http://tempuri.org/EmpTimeCardService/WorkerInOutRegistrationForDayResponse" name="WorkerInOutRegistrationForDayResponse" message="tns:WorkerInOutRegistrationForDayResponse" />
+      <wsdl:fault wsam:Action="http://tempuri.org/EmpTimeCardService/Fault" name="SoapServiceFaultFault" message="tns:EmpTimeCardService_WorkerInOutRegistrationForDay_SoapServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

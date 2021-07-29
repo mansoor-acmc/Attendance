@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using BAL.AttendanceServices;
+using SoapUtility.AttendanceServices;
 
 namespace BAL
 {
@@ -16,26 +16,26 @@ namespace BAL
 
             errors = exp.Message;
 
-            if (exp is System.ServiceModel.FaultException<AifFault>)
-            {
-                var extendedExp = (System.ServiceModel.FaultException<AifFault>)exp;
-                if (extendedExp != null)
-                {
-                    if (extendedExp.Detail != null)
-                    {
-                        if (extendedExp.Detail.InfologMessageList != null && extendedExp.Detail.InfologMessageList.Length > 0)
-                        {
-                            var infoLogs = extendedExp.Detail.InfologMessageList;
-                            errors = "";
-                            foreach (var infoLog in infoLogs)
-                            {
-                                errors += infoLog.Message.Replace('\t', ' ') + Environment.NewLine;
-                            }
-                        }
-                    }
-                }
-                exp = extendedExp;
-            }
+            //if (exp is System.ServiceModel.FaultException<AifFault>)
+            //{
+            //    var extendedExp = (System.ServiceModel.FaultException<AifFault>)exp;
+            //    if (extendedExp != null)
+            //    {
+            //        if (extendedExp.Detail != null)
+            //        {
+            //            if (extendedExp.Detail.InfologMessageList != null && extendedExp.Detail.InfologMessageList.Length > 0)
+            //            {
+            //                var infoLogs = extendedExp.Detail.InfologMessageList;
+            //                errors = "";
+            //                foreach (var infoLog in infoLogs)
+            //                {
+            //                    errors += infoLog.Message.Replace('\t', ' ') + Environment.NewLine;
+            //                }
+            //            }
+            //        }
+            //    }
+            //    exp = extendedExp;
+            //}
 
 
             logMonitor.Expection = exp;

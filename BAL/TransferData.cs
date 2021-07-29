@@ -9,7 +9,11 @@ using System.Data.OleDb;
 using System.Configuration;
 using System.Data.Odbc;
 using System.IO;
-using BAL.AttendanceServices;
+using SoapUtility.AttendanceServices;
+using System.ServiceModel;
+using System.Net;
+using AuthenticationUtility;
+using System.ServiceModel.Channels;
 
 namespace BAL
 {
@@ -26,6 +30,11 @@ namespace BAL
         SqlConnection conn = null;
         public List<MachineLastLog> MachineLogs = null;
         public static int PunchNotKnown = 100; //If Punch-in OR Punch-out not known, like in Hanvon machine or text based machines
+
+        public const string D365ServiceName = "AttendanceServices";
+        IClientChannel channel;
+        string oauthHeader = string.Empty;
+        CallContext context = null;
 
         public void StartConn()
         {
@@ -56,6 +65,24 @@ namespace BAL
             eventLog = _eventLog;
             logMonitor = new Monitoring();
             MachineLogs = new List<MachineLastLog>();
+
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            var aosUriString = AuthenticationUtility.ClientConfiguration.Default.UriString;
+
+            oauthHeader = OAuthHelper.GetAuthenticationHeader(true);
+            var serviceUriString = SoapUtility.SoapHelper.GetSoapServiceUriString(D365ServiceName, aosUriString);
+
+            var endpointAddress = new EndpointAddress(serviceUriString);
+            var binding = SoapUtility.SoapHelper.GetBinding();
+
+            var client = new EmpTimeCardServiceClient(binding, endpointAddress);
+            channel = client.InnerChannel;
+
+            context = new CallContext()
+            {
+                MessageId = Guid.NewGuid().ToString(),
+                Company = ConfigurationManager.AppSettings["DynamicsCompany"]
+            };
         }
 
         private void WriteLog11(string message, EventLogEntryType eventType, Exception exp)
@@ -75,12 +102,16 @@ namespace BAL
 
             for (int i = 0; i < company.Length; i++)
             {
-                CallContext context = new CallContext();
-                context.Company = company[i];
-                context.MessageId = Guid.NewGuid().ToString();
+                using (OperationContextScope operationContextScope = new OperationContextScope(channel))
+                {
+                    HttpRequestMessageProperty requestMessage = new HttpRequestMessageProperty();
+                    requestMessage.Headers[OAuthHelper.OAuthHeader] = oauthHeader;
+                    OperationContext.Current.OutgoingMessageProperties[HttpRequestMessageProperty.Name] = requestMessage;
 
-                EmpTimeCardServiceClient client = new EmpTimeCardServiceClient();
-                client.applyLeaveTransaction(context);
+                    ((EmpTimeCardService)channel).applyLeaveTransaction(new applyLeaveTransaction(context));
+                }
+                
+               
             }
         }
 
@@ -423,13 +454,10 @@ Col5=TIME Char Width 6
         }
         
         string ArrangeImportedData(DateTime dtFromTime, DateTime dtEndTime, string employeesNumbers, bool isSaveRaw=false, string company="ACMC")
-        {
-            CallContext context = new CallContext();
-            context.Company = company;
-            context.MessageId = Guid.NewGuid().ToString();
+        {           
 
             DataSet ds = new DataSet();
-            AxdEmpTimeCard empTimeCard = new AxdEmpTimeCard();
+            //AxdEmpTimeCard empTimeCard = new AxdEmpTimeCard();
             List<TimeCardSmallContract> timeCards = new List<TimeCardSmallContract>();
 
             string[] whichDevices = ConfigurationManager.AppSettings["WhichDevice"].Split(',');
@@ -476,27 +504,29 @@ Col5=TIME Char Width 6
                     foreach (DataRow dr in ds.Tables["History"].Rows)
                     {
                         //now create time card to import in Axapta
-                        DateTime shiftDate = DateTime.Parse(dr["punch"].ToString()).Date;
+                        TimeZoneInfo tzi = TimeZoneInfo.Local;
+                        //DateTime shiftDate = DateTime.Parse(dr["punch"].ToString()).Date;
 
-                        AxdType_DateTime beginCardTime = new AxdType_DateTime()
-                        {
-                            localDateTime = DateTime.Parse(dr["punch"].ToString()).ToUniversalTime(),
-                            timezone = AxdEnum_Timezone.GMTPLUS0300KUWAIT_RIYADH,
-                        };
-                        beginCardTime.Value = beginCardTime.localDateTime;
-                        
-                        if (beginCardTime.localDateTime.Year == 1900)
+                        //AxdType_DateTime beginCardTime = new AxdType_DateTime()
+                        //{
+                        //    localDateTime = DateTime.Parse(dr["punch"].ToString()).ToUniversalTime(),
+                        //    timezone = AxdEnum_Timezone.GMTPLUS0300KUWAIT_RIYADH,
+                        //};
+                        //beginCardTime.Value = beginCardTime.localDateTime;
+                        DateTime cardTime = DateTime.Parse(dr["Punch"].ToString());
+                        cardTime = TimeZoneInfo.ConvertTime(cardTime, TimeZoneInfo.Utc, tzi);
+                        if (cardTime.Year == 1900)
                             continue;
 
                         TimeCardSmallContract timeCard = new TimeCardSmallContract()
                         {                            
                             EmployeeId = int.Parse(dr["ecode"].ToString()),
-                            EmployeeIdSpecified = true                            
+                            //EmployeeIdSpecified = true                            
                         };
                         //timeCard.ShiftDate = shiftDate;
                         //timeCard.ShiftDateSpecified = true;
-                        timeCard.CardTime = beginCardTime.localDateTime;
-                        timeCard.CardTimeSpecified = true;                        
+                        timeCard.CardTime = cardTime;
+                        //timeCard.CardTimeSpecified = true;                        
                         //timeCard.EndCardTimeSpecified = false;
 
                         timeCards.Add(timeCard);
@@ -511,29 +541,30 @@ Col5=TIME Char Width 6
                     foreach (DataRow dr in ds.Tables["HistoryFile"].Rows)
                     {
                         //now create time card to import in Axapta
-                        //DateTime shiftDate = DateTime.Parse(dr["punch"].ToString()).Date;
+                        TimeZoneInfo tzi = TimeZoneInfo.Local;                        
 
-                        DateTime shiftDate = (DateTime)dr["Punch"];//DateTime.ParseExact(dr["punch"].ToString(), "yyyyMMddTHHmmss", System.Globalization.CultureInfo.InvariantCulture);
-                        AxdType_DateTime beginCardTime = new AxdType_DateTime()
-                        {
-                            localDateTime = shiftDate.ToUniversalTime(),
-                            timezone = AxdEnum_Timezone.GMTPLUS0300KUWAIT_RIYADH,
-                        };
-                        beginCardTime.Value = beginCardTime.localDateTime;
-
-                        if (beginCardTime.localDateTime.Year == 1900)
+                        //DateTime shiftDate = (DateTime)dr["Punch"];//DateTime.ParseExact(dr["punch"].ToString(), "yyyyMMddTHHmmss", System.Globalization.CultureInfo.InvariantCulture);
+                        //AxdType_DateTime beginCardTime = new AxdType_DateTime()
+                        //{
+                        //    localDateTime = shiftDate.ToUniversalTime(),
+                        //    timezone = AxdEnum_Timezone.GMTPLUS0300KUWAIT_RIYADH,
+                        //};
+                        //beginCardTime.Value = beginCardTime.localDateTime;
+                        DateTime cardTime = DateTime.Parse(dr["Punch"].ToString());
+                        cardTime = TimeZoneInfo.ConvertTime(cardTime, TimeZoneInfo.Utc, tzi);
+                        if (cardTime.Year == 1900)
                             continue;
 
                         TimeCardSmallContract timeCard = new TimeCardSmallContract()
                         {
                             EmployeeId = int.Parse(dr["Ecode"].ToString()),
-                            EmployeeIdSpecified = true,
+                            //EmployeeIdSpecified = true,
                             JobClockInOut = PunchNotKnown,
-                            JobClockInOutSpecified = true
+                            //JobClockInOutSpecified = true
                         };
 
-                        timeCard.CardTime = beginCardTime.localDateTime;
-                        timeCard.CardTimeSpecified = true;
+                        timeCard.CardTime = cardTime;
+                        //timeCard.CardTimeSpecified = true;
                         timeCard.Machine = dr["Machine"].ToString();
 
                         timeCards.Add(timeCard);
@@ -549,26 +580,27 @@ Col5=TIME Char Width 6
                     foreach (DataRow dr in ds.Tables["NewApp"].Rows)
                     {
                         //now create time card to import in Axapta
-                        DateTime shiftDate = DateTime.Parse(dr["Punch"].ToString()).Date;
-
-                        AxdType_DateTime beginCardTime = new AxdType_DateTime()
-                        {
-                            localDateTime = DateTime.Parse(dr["Punch"].ToString()).ToUniversalTime(),
-                            timezone = AxdEnum_Timezone.GMTPLUS0300KUWAIT_RIYADH,
-                        };
-                        beginCardTime.Value = beginCardTime.localDateTime;
-
-                        if (beginCardTime.localDateTime.Year == 1900)
+                        TimeZoneInfo tzi = TimeZoneInfo.Local;
+                        //DateTime shiftDate = DateTime.Parse(dr["Punch"].ToString()).Date;                       
+                        //AxdType_DateTime beginCardTime = new AxdType_DateTime()
+                        //{
+                        //    localDateTime = DateTime.Parse(dr["Punch"].ToString()).ToUniversalTime(),
+                        //    timezone = AxdEnum_Timezone.GMTPLUS0300KUWAIT_RIYADH,
+                        //};
+                        //beginCardTime.Value = beginCardTime.localDateTime;
+                        DateTime cardTime = DateTime.Parse(dr["Punch"].ToString());
+                        cardTime = TimeZoneInfo.ConvertTime(cardTime, TimeZoneInfo.Utc, tzi);
+                        if (cardTime.Year == 1900)
                             continue;
 
                         TimeCardSmallContract timeCard = new TimeCardSmallContract()
                         {
                             EmployeeId = int.Parse(dr["EmployeeNum"].ToString()),
-                            EmployeeIdSpecified = true
+                            //EmployeeIdSpecified = true
                         };
                        
-                        timeCard.CardTime = beginCardTime.localDateTime;
-                        timeCard.CardTimeSpecified = true;                      
+                        timeCard.CardTime = cardTime;
+                        //timeCard.CardTimeSpecified = true;                      
 
                         timeCards.Add(timeCard);
                     }
@@ -583,30 +615,34 @@ Col5=TIME Char Width 6
                     foreach (DataRow dr in ds.Tables["Hanvon"].Rows)
                     {
                         //now create time card to import in Axapta
+                        TimeZoneInfo tzi = TimeZoneInfo.Local;
                         DateTime shiftDate = DateTime.Parse(dr["Punch"].ToString()).Date;
+                        shiftDate = TimeZoneInfo.ConvertTime(shiftDate, TimeZoneInfo.Utc, tzi);
+                        //AxdType_DateTime beginCardTime = new AxdType_DateTime()
+                        //{
+                        //    localDateTime = DateTime.Parse(dr["punch"].ToString()).ToUniversalTime(),
+                        //    timezone = AxdEnum_Timezone.GMTPLUS0300KUWAIT_RIYADH,
+                        //};
+                        //beginCardTime.Value = beginCardTime.localDateTime;
 
-                        AxdType_DateTime beginCardTime = new AxdType_DateTime()
-                        {
-                            localDateTime = DateTime.Parse(dr["punch"].ToString()).ToUniversalTime(),
-                            timezone = AxdEnum_Timezone.GMTPLUS0300KUWAIT_RIYADH,
-                        };
-                        beginCardTime.Value = beginCardTime.localDateTime;
-
-                        if (beginCardTime.localDateTime.Year == 1900)
+                        if (shiftDate.Year == 1900)
                             continue;
+
+                        DateTime cardTime = DateTime.Parse(dr["Punch"].ToString());
+                        cardTime = TimeZoneInfo.ConvertTime(cardTime, TimeZoneInfo.Utc, tzi);
 
                         TimeCardSmallContract timeCard = new TimeCardSmallContract()
                         {
                             EmployeeId = int.Parse(dr["ecode"].ToString()),
-                            EmployeeIdSpecified = true,
+                            //EmployeeIdSpecified = true,
                             Machine = dr["Machine"].ToString(),
                             JobClockInOut = PunchNotKnown,
-                            JobClockInOutSpecified = true
+                            //JobClockInOutSpecified = true
                         };
                         //timeCard.ShiftDate = shiftDate;
                         //timeCard.ShiftDateSpecified = true;
-                        timeCard.CardTime = beginCardTime.localDateTime;
-                        timeCard.CardTimeSpecified = true;
+                        timeCard.CardTime = cardTime;
+                        //timeCard.CardTimeSpecified = true;
                         //timeCard.EndCardTimeSpecified = false;
 
                         timeCards.Add(timeCard);
@@ -624,36 +660,32 @@ Col5=TIME Char Width 6
                             continue;
 
                         //now create time card to import in Axapta
+                        TimeZoneInfo tzi = TimeZoneInfo.Local;
                         DateTime shiftDate = DateTime.Parse(dr["Punch"].ToString()).Date;
                         if (shiftDate.Year == 1900)
                             continue;
 
-                        AxdType_DateTime beginCardTime = new AxdType_DateTime()
-                        {
-                            localDateTime = DateTime.Parse(dr["Punch"].ToString()),
-                            timezone = AxdEnum_Timezone.GMTPLUS0300KUWAIT_RIYADH,
-                            timezoneSpecified = true
-                        };
-                        beginCardTime.Value = beginCardTime.localDateTime;
-                        TimeZoneInfo tzi = TimeZoneInfo.Local;
-                        shiftDate=TimeZoneInfo.ConvertTime(beginCardTime.localDateTime, TimeZoneInfo.Utc, tzi);
+                        DateTime cardTime = DateTime.Parse(dr["Punch"].ToString());                        
+                        
+                        shiftDate = TimeZoneInfo.ConvertTime(shiftDate, TimeZoneInfo.Utc, tzi);
+                        cardTime = TimeZoneInfo.ConvertTime(cardTime, TimeZoneInfo.Utc, tzi);
 
-                       
+
                         TimeCardSmallContract timeCard = new TimeCardSmallContract()
                         {
                             EmployeeId = int.Parse(dr["Ecode"].ToString()),
-                            EmployeeIdSpecified = true
+                            //EmployeeIdSpecified = true
                         };
                         
                         timeCard.CardTime = shiftDate;
-                        timeCard.CardTimeSpecified = true;                        
+                        //timeCard.CardTimeSpecified = true;                        
                         timeCard.Machine = dr["Machine"].ToString();
                         timeCard.JobClockInOut = int.Parse(dr["JobId"].ToString())-1;
-                        timeCard.JobClockInOutSpecified = true;
+                        //timeCard.JobClockInOutSpecified = true;
                         if (dr["ImagePath"] != DBNull.Value)
                             timeCard.FaceImage = dr["ImagePath"].ToString();
                         timeCard.LogCardId = uint.Parse( dr["LogId"].ToString());
-                        timeCard.LogCardIdSpecified = true;
+                        //timeCard.LogCardIdSpecified = true;
 
                         timeCards.Add(timeCard);
                     }
@@ -675,13 +707,7 @@ Col5=TIME Char Width 6
                         if (shiftDate.Year == 1900)
                             continue;
 
-                        //AxdType_DateTime beginCardTime = new AxdType_DateTime()
-                        //{
-                        //    localDateTime = DateTime.Parse(dr["Punch"].ToString()),
-                        //    timezone = AxdEnum_Timezone.GMTPLUS0300KUWAIT_RIYADH,
-                        //    timezoneSpecified = false
-                        //};
-                        //beginCardTime.Value = beginCardTime.localDateTime;
+                        
                         //TimeZoneInfo tzi = TimeZoneInfo.Local;
                         //shiftDate = TimeZoneInfo.ConvertTime(beginCardTime.localDateTime, TimeZoneInfo.Utc, tzi);
                         DateTime punchTime = (DateTime)dr["Punch"];
@@ -689,16 +715,16 @@ Col5=TIME Char Width 6
                         TimeCardSmallContract timeCard = new TimeCardSmallContract()
                         {
                             EmployeeId = int.Parse(dr["Ecode"].ToString()),
-                            EmployeeIdSpecified = true
+                            //EmployeeIdSpecified = true
                         };
 
                         timeCard.CardTime = punchTime;
-                        timeCard.CardTimeSpecified = true;
+                        //timeCard.CardTimeSpecified = true;
                         timeCard.Machine = dr["Machine"].ToString().ToUpper()+" "+ dr["Alias"].ToString().ToUpper();
                         timeCard.JobClockInOut = int.Parse(dr["JobId"].ToString()) - 1;
-                        timeCard.JobClockInOutSpecified = true;                        
+                        //timeCard.JobClockInOutSpecified = true;                        
                         timeCard.LogCardId = 0;
-                        timeCard.LogCardIdSpecified = false;
+                        //timeCard.LogCardIdSpecified = false;
 
                         string imgName = string.Empty;
                         string imgFullPath = string.Empty;
@@ -742,7 +768,14 @@ Col5=TIME Char Width 6
                         if (isSaveRaw)
                         {                            
                             BAL.ErrorObject.WriteLog("Attendances Uploading RAW..." + empUploaded, null, EventLogEntryType.Information, null);
-                            client.SaveRawAttendance(context, chunk);
+                            using (OperationContextScope operationContextScope = new OperationContextScope(channel))
+                            {
+                                HttpRequestMessageProperty requestMessage = new HttpRequestMessageProperty();
+                                requestMessage.Headers[OAuthHelper.OAuthHeader] = oauthHeader;
+                                OperationContext.Current.OutgoingMessageProperties[HttpRequestMessageProperty.Name] = requestMessage;
+
+                                ((EmpTimeCardService)channel).SaveRawAttendance(new SaveRawAttendance(context, chunk));
+                            }                            
                             //BAL.ErrorObject.WriteLog("Attendances Uploaded RAW: " , null, EventLogEntryType.Information, null);
                         }
                         else
@@ -750,8 +783,16 @@ Col5=TIME Char Width 6
                             try
                             {                                
                                 BAL.ErrorObject.WriteLog("Attendances Uploading Auto... " + empUploaded, null, EventLogEntryType.Information, null);
-                                string result = client.WorkerInOutRegistration(context, chunk);
-                                BAL.ErrorObject.WriteLog("Attendances Uploaded Auto: " + result, null, EventLogEntryType.Information, null);
+                                using (OperationContextScope operationContextScope = new OperationContextScope(channel))
+                                {
+                                    HttpRequestMessageProperty requestMessage = new HttpRequestMessageProperty();
+                                    requestMessage.Headers[OAuthHelper.OAuthHeader] = oauthHeader;
+                                    OperationContext.Current.OutgoingMessageProperties[HttpRequestMessageProperty.Name] = requestMessage;
+
+                                    string result = ((EmpTimeCardService)channel).WorkerInOutRegistration(new WorkerInOutRegistration(context, chunk)).result;
+
+                                    BAL.ErrorObject.WriteLog("Attendances Uploaded Auto: " + result, null, EventLogEntryType.Information, null);
+                                }
                             }
                             catch (Exception exp)
                             {
@@ -782,17 +823,25 @@ Col5=TIME Char Width 6
 
             for (int i = 0; i < company.Length; i++)
             {
-                CallContext context = new CallContext();
-                context.Company = company[i];
-                context.MessageId = Guid.NewGuid().ToString();
+                CallContext contextLocal = new CallContext()
+                {
+                    Company = company[i],
+                    MessageId = Guid.NewGuid().ToString()
+                };
+                
                 try
                 {
-
                     DateTime startDate = DateTime.Now.AddDays(-attendanceDownloadDays);
                     DateTime endDate = DateTime.Now;
 
-                    EmpTimeCardServiceClient client = new EmpTimeCardServiceClient();
-                    results = client.WorkerInOutRegistrationForDay(context, startDate, endDate);
+                    using (OperationContextScope operationContextScope = new OperationContextScope(channel))
+                    {
+                        HttpRequestMessageProperty requestMessage = new HttpRequestMessageProperty();
+                        requestMessage.Headers[OAuthHelper.OAuthHeader] = oauthHeader;
+                        OperationContext.Current.OutgoingMessageProperties[HttpRequestMessageProperty.Name] = requestMessage;
+
+                        results = ((EmpTimeCardService)channel).WorkerInOutRegistrationForDay(new WorkerInOutRegistrationForDay(contextLocal, endDate, startDate)).result;
+                    }                                        
                 }
                 catch (Exception exp)
                 {
@@ -805,12 +854,17 @@ Col5=TIME Char Width 6
         public List<MachineLastLog> GetMachineLastLogs()
         {
             List<MachineLastLog> result = new List<MachineLastLog>();
-            CallContext context = new CallContext();
-            context.Company = "ACMC";
-            context.MessageId = Guid.NewGuid().ToString();
+            TimeCardSmallContract[] logs = null;
 
-            EmpTimeCardServiceClient client = new EmpTimeCardServiceClient();
-            var logs = client.GetLastMachineLogIds(context);
+            using (OperationContextScope operationContextScope = new OperationContextScope(channel))
+            {
+                HttpRequestMessageProperty requestMessage = new HttpRequestMessageProperty();
+                requestMessage.Headers[OAuthHelper.OAuthHeader] = oauthHeader;
+                OperationContext.Current.OutgoingMessageProperties[HttpRequestMessageProperty.Name] = requestMessage;
+
+                logs = ((EmpTimeCardService)channel).GetLastMachineLogIds(new GetLastMachineLogIds(context)).result;
+            }
+            
             foreach (TimeCardSmallContract one in logs)
             {
                 MachineLastLog oneRow = new MachineLastLog()
@@ -828,8 +882,7 @@ Col5=TIME Char Width 6
 
                 result.Add(oneRow);
             }
-            client.Close();
-
+           
             return result;
         }
 
