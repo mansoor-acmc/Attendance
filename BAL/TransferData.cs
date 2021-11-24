@@ -685,6 +685,14 @@ Col5=TIME Char Width 6
                         if (dr["ImagePath"] != DBNull.Value)
                             timeCard.FaceImage = dr["ImagePath"].ToString();
                         timeCard.LogCardId = uint.Parse( dr["LogId"].ToString());
+                        FileStream file = File.OpenRead(timeCard.FaceImage);
+                        var b = new byte[file.Length];
+                        file.Read(b, 0, b.Length);
+
+                        //timeCard.FaceImageBmp = b;
+                        file.Close();
+                        file.Dispose();
+
                         //timeCard.LogCardIdSpecified = true;
 
                         timeCards.Add(timeCard);
